@@ -11,6 +11,8 @@
 // @resource     REMOTE_CSS https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css
 // @grant        GM_getResourceText
 // @grant        GM_addStyle
+// @downloadURL https://update.greasyfork.org/scripts/483445/Enhanced%20Google%20Chat.user.js
+// @updateURL https://update.greasyfork.org/scripts/483445/Enhanced%20Google%20Chat.meta.js
 // ==/UserScript==
 
 /* global hljs */
@@ -21,10 +23,9 @@ function format_codes() {
         let data_cd_attr = span.getAttribute("data-cd");
         // We use "```" to identify code blocks.
         if (data_cd_attr === "hidden" && span.textContent === "```") {
-            let br_count = span.getElementsByTagName("br").length;
-            if (br_count === 0) {
-                // The first <span>```</span> element doesn't contain any
-                // nested <br> tags. The next sibling element is the content
+            let next_sibling_element = span.nextElementSibling;
+            if (next_sibling_element != null && next_sibling_element.getAttribute("role") === "complementary") {
+                // The next sibling element is the content
                 // of the code block.
                 let parent_div = span.parentElement;
                 let orig_code_block = span.nextElementSibling;
@@ -51,14 +52,16 @@ function format_codes() {
                 // We're ready to highlight it.
                 hljs.highlightElement(code_ele);
 
+                let language_mark = document.createElement("span");
+                language_mark.setAttribute("class", "hljs-language-mark");
+                language_mark.textContent = "-----------\nCode block: " + language;
+                parent_div.appendChild(language_mark);
+
                 // Append it to the parent element.
                 parent_div.appendChild(pre_ele);
 
                 // Remove the original code block.
                 orig_code_block.remove();
-            } else {
-                // End of code block.
-                // <span>```<br></span>
             }
 
             // Remove the <span> tag so that we won't render the code block twice.
