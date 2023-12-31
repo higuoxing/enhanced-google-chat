@@ -7,7 +7,7 @@
 // @license      MIT
 // @match        https://mail.google.com/chat/u/*
 // @match        https://chat.google.com/u/*
-// @icon         https://www.google.com/s2/favicons?sz=64&domain=google.com
+// @icon         https://www.google.com/s2/favicons?sz=64&domain=chat.google.com
 // @require      https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js
 // @resource     REMOTE_CSS https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css
 // @grant        GM_getResourceText
