@@ -31,10 +31,6 @@ function format_codes() {
                 let parent_div = span.parentElement;
                 let orig_code_block = span.nextElementSibling;
 
-                // Create code container.
-                let pre_ele = document.createElement("pre");
-                let code_ele = document.createElement("code");
-
                 // Determine the language.
                 let orig_code_content = orig_code_block.innerText;
                 let orig_code_lines = orig_code_content.split('\n');
@@ -42,6 +38,14 @@ function format_codes() {
                     continue;
                 }
                 let language = orig_code_lines[0];
+
+                if (hljs.getLanguage(language) === undefined || hljs.getLanguage(language) === null) {
+                    continue;
+                }
+
+                // Create code container.
+                let pre_ele = document.createElement("pre");
+                let code_ele = document.createElement("code");
                 code_ele.setAttribute("class", "language-" + language);
 
                 // Remove the 1st line that specifies the language.
