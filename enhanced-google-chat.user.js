@@ -4,6 +4,7 @@
 // @version      2023-12-30
 // @description  Bring missing features to Google Chat.
 // @author       @higuoxing
+// @license      MIT
 // @match        https://mail.google.com/chat/u/*
 // @match        https://chat.google.com/u/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=google.com
