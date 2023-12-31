@@ -50,6 +50,7 @@ function format_codes() {
 
                 // Remove the 1st line that specifies the language.
                 orig_code_lines.shift();
+
                 // Append our new code block.
                 code_ele.textContent = orig_code_lines.join('\n');
                 pre_ele.appendChild(code_ele);
@@ -59,7 +60,12 @@ function format_codes() {
 
                 let language_mark = document.createElement("span");
                 language_mark.setAttribute("class", "hljs-language-mark");
-                language_mark.textContent = "-----------\nCode block: " + language;
+                language_mark.textContent = language + ":";
+                // If the code block is embeded in some text, we append a <br> tag before
+                // the code block.
+                if (span.previousSibling != null && Object.prototype.toString.call(span.previousSibling) === "[object Text]") {
+                    parent_div.appendChild(document.createElement("br"));
+                }
                 parent_div.appendChild(language_mark);
 
                 // Append it to the parent element.
@@ -83,7 +89,14 @@ function initialize() {
     // I'm not a CSS expert, we force the font family of every hljs elements to be monospace.
     GM_addStyle(`[class^="hljs-"], [class*=" hljs-"], [class^="hljs"], [class*=" hljs"] {
                      font-family: "Roboto Mono",monospace;
-                 }`
+                 }
+                 .hljs-language-mark {
+                     font-size: 0.7em;
+                 }
+                 .hljs {
+                     background: #fafafa;
+                 }
+                `
     );
 }
 
