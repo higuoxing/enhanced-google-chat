@@ -61,15 +61,13 @@ function format_codes() {
                 let language_mark = document.createElement("span");
                 language_mark.setAttribute("class", "hljs-language-mark");
                 language_mark.textContent = language + ":";
-                // If the code block is embeded in some text, we append a <br> tag before
-                // the code block.
-                if (span.previousSibling != null && Object.prototype.toString.call(span.previousSibling) === "[object Text]") {
-                    parent_div.appendChild(document.createElement("br"));
-                }
-                parent_div.appendChild(language_mark);
 
+                // Create a new code container.
+                let code_container = document.createElement("div");
+                code_container.appendChild(language_mark);
+                code_container.appendChild(pre_ele);
                 // Append it to the parent element.
-                parent_div.appendChild(pre_ele);
+                parent_div.insertBefore(code_container, orig_code_block);
 
                 // Remove the original code block.
                 orig_code_block.remove();
