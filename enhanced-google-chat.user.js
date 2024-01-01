@@ -18,11 +18,11 @@
 
 /* global hljs */
 
-function format_codes() {
+function render_code_blocks() {
     let spans = document.getElementsByTagName("span");
     for (let span of spans) {
         let data_cd_attr = span.getAttribute("data-cd");
-        // We use "```" to identify code blocks.
+        // We use <span data-cd="hidden">```</span> to identify code blocks.
         if (data_cd_attr === "hidden" && span.textContent === "```") {
             let next_sibling_element = span.nextElementSibling;
             if (next_sibling_element != null && next_sibling_element.getAttribute("role") === "complementary") {
@@ -39,6 +39,7 @@ function format_codes() {
                 }
                 let language = orig_code_lines[0];
 
+		// Check if hljs can highlight our language.
                 if (hljs.getLanguage(language) === undefined || hljs.getLanguage(language) === null) {
                     continue;
                 }
@@ -89,7 +90,7 @@ function initialize() {
                      font-family: "Roboto Mono",monospace;
                  }
                  .hljs-language-mark {
-                     font-size: 0.7em;
+                     font-size: 0.8em;
                  }
                  .hljs {
                      background: #fafafa;
@@ -100,7 +101,7 @@ function initialize() {
 
 // Called periodically.
 function main() {
-    format_codes();
+    render_code_blocks();
 }
 
 function debounce(fn, delay) {

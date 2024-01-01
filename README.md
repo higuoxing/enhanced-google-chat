@@ -4,5 +4,6 @@
 
 ## Features
 
-- Code highlight.
+- Code highlighting.
 
+  ![](./.screenshots/code-highlighting.png)
