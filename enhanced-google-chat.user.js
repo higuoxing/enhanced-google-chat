@@ -80,6 +80,17 @@ function render_code_blocks() {
     }
 }
 
+function register_enter_key_handler() {
+     window.addEventListener('keydown', (e) => {
+        // Only let it go if the ctrl key is down.
+        // Just don't call preventDefault(), a new line will be created always which is the
+        // textfield's default behaviour
+        if (e.key == 'Enter' && !e.ctrlKey) {
+            e.stopImmediatePropagation();
+        }
+    }, true);
+}
+
 // Called only once.
 function initialize() {
     // Initialize stylesheets.
@@ -127,6 +138,7 @@ function debounce(fn, delay) {
     }
 
     initialize();
+    register_enter_key_handler();
 
     let el = document.documentElement;
     el.addEventListener('DOMSubtreeModified', debounce(main, 1000));

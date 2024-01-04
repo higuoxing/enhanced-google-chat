@@ -5,5 +5,6 @@
 ## Features
 
 - Code highlighting.
+- `Ctrl-Enter` to send, `Enter` to input new lines.
 
   ![](./.screenshots/code-highlighting.png)
