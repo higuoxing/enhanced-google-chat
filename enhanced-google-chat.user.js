@@ -100,7 +100,7 @@ function register_enter_key_handler(element) {
                 pop_up_list = document.getElementsByClassName("P2iMtd jBmls krjOGe");
             }
             var item1 = pop_up_list[1];
-            // Do not intercept enter key if if the pop up list is visible.
+            // Do not intercept enter key if the pop up list is visible.
             if (!item1.innerHTML) {
                 e.stopImmediatePropagation();
             }
