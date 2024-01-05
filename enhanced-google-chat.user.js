@@ -9,6 +9,7 @@
 // @match        https://chat.google.com/u/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=chat.google.com
 // @require      https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js
+// @require      https://cdn.jsdelivr.net/gh/CoeJoder/GM_wrench@v1.3/dist/GM_wrench.min.js
 // @resource     REMOTE_CSS https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css
 // @grant        GM_getResourceText
 // @grant        GM_addStyle
@@ -17,6 +18,12 @@
 // ==/UserScript==
 
 /* global hljs */
+/* global GM_wrench */
+
+const config = {
+    // Enable "Ctrl-Enter" key to send message. "Enter" key will just input a new line.
+    enable_ctrl_enter_to_send: true
+};
 
 function render_code_blocks() {
     let spans = document.getElementsByTagName("span");
@@ -80,13 +87,23 @@ function render_code_blocks() {
     }
 }
 
-function register_enter_key_handler() {
-     window.addEventListener('keydown', (e) => {
+function register_enter_key_handler(element) {
+    var pop_up_list;
+
+    element.addEventListener('keydown', (e) => {
         // Only let it go if the ctrl key is down.
         // Just don't call preventDefault(), a new line will be created always which is the
-        // textfield's default behaviour
+        // textfield's default behaviour.
         if (e.key == 'Enter' && !e.ctrlKey) {
-            e.stopImmediatePropagation();
+            if (!pop_up_list) {
+                // Get the pop up list after inputting "@".
+                pop_up_list = document.getElementsByClassName("P2iMtd jBmls krjOGe");
+            }
+            var item1 = pop_up_list[1];
+            // Do not intercept enter key if if the pop up list is visible.
+            if (!item1.innerHTML) {
+                e.stopImmediatePropagation();
+            }
         }
     }, true);
 }
@@ -138,8 +155,14 @@ function debounce(fn, delay) {
     }
 
     initialize();
-    register_enter_key_handler();
 
     let el = document.documentElement;
     el.addEventListener('DOMSubtreeModified', debounce(main, 1000));
+
+    if (config.enable_ctrl_enter_to_send) {
+        // register event on the chat text input box
+        GM_wrench.waitForKeyElements('#T2Ybvb0', (element) => {
+            register_enter_key_handler(element);
+        });
+    }
 })();
