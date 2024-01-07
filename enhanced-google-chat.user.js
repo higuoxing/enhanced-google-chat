@@ -13,8 +13,8 @@
 // @resource     REMOTE_CSS https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css
 // @grant        GM_getResourceText
 // @grant        GM_addStyle
-// @downloadURL https://update.greasyfork.org/scripts/483445/Enhanced%20Google%20Chat.user.js
-// @updateURL https://update.greasyfork.org/scripts/483445/Enhanced%20Google%20Chat.meta.js
+// @downloadURL  https://update.greasyfork.org/scripts/483445/Enhanced%20Google%20Chat.user.js
+// @updateURL    https://update.greasyfork.org/scripts/483445/Enhanced%20Google%20Chat.meta.js
 // ==/UserScript==
 
 /* global hljs */
@@ -46,7 +46,7 @@ function render_code_blocks() {
                 }
                 let language = orig_code_lines[0];
 
-		// Check if hljs can highlight our language.
+                // Check if hljs can highlight our language.
                 if (hljs.getLanguage(language) === undefined || hljs.getLanguage(language) === null) {
                     continue;
                 }
@@ -96,13 +96,14 @@ function register_enter_key_handler(element) {
         // textfield's default behaviour.
         if (e.key == 'Enter' && !e.ctrlKey) {
             if (!pop_up_list) {
-                // Get the pop up list after inputting "@".
-                pop_up_list = document.getElementsByClassName("P2iMtd jBmls krjOGe");
-            }
-            var item1 = pop_up_list[1];
-            // Do not intercept enter key if the pop up list is visible.
-            if (!item1.innerHTML) {
-                e.stopImmediatePropagation();
+                // Get the pop up list after inputting "@" (for tagging people) or ':' (for inserting emojis), etc.
+                let listbox_nodes = div.getElementsByTagName('div');
+                for (let listbox of listbox_nodes) {
+                    if (listbox.getAttribute('role') === 'listbox' && !listbox.innerHTML) {
+                        // Do not intercept enter key if the pop up list is visible.
+                        e.stopImmediatePropagation();
+                    }
+                }
             }
         }
     }, true);
@@ -134,11 +135,11 @@ function main() {
 
 function debounce(fn, delay) {
     let timeout = null;
-    return function() {
-        if(timeout) {
+    return function () {
+        if (timeout) {
             return;
         } else {
-            timeout = setTimeout(function() {
+            timeout = setTimeout(function () {
                 fn();
                 timeout = null;
             }, delay);
@@ -146,11 +147,11 @@ function debounce(fn, delay) {
     }
 }
 
-(function() {
+(function () {
     'use strict';
     if (window.trustedTypes && window.trustedTypes.createPolicy) {
         window.trustedTypes.createPolicy('default', {
-        createHTML: (string, sink) => string
+            createHTML: (string, sink) => string
         });
     }
 
@@ -161,7 +162,18 @@ function debounce(fn, delay) {
 
     if (config.enable_ctrl_enter_to_send) {
         // register event on the chat text input box
-        GM_wrench.waitForKeyElements('#T2Ybvb0', (element) => {
+        GM_wrench.waitForKeyElements(() => {
+            let div_nodes = document.getElementsByTagName('div');
+            for (let div of div_nodes) {
+                // The id of the input text area varies, we use 'role', 'aria-label' and 'contenteditable' attributes
+                // to locate the element.
+                if (div.getAttribute('role') === 'textbox' && div.getAttribute('aria-label') === 'History is on' &&
+                    div.getAttribute('contenteditable') === 'true') {
+                    return [div];
+                }
+            }
+            return [];
+        }, (element) => {
             register_enter_key_handler(element);
         });
     }
