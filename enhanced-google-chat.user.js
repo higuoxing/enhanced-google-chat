@@ -88,22 +88,22 @@ function render_code_blocks() {
 }
 
 function register_enter_key_handler(element) {
-    var pop_up_list;
-
     element.addEventListener('keydown', (e) => {
         // Only let it go if the ctrl key is down.
         // Just don't call preventDefault(), a new line will be created always which is the
         // textfield's default behaviour.
         if (e.key == 'Enter' && !e.ctrlKey) {
-            if (!pop_up_list) {
-                // Get the pop up list after inputting "@" (for tagging people) or ':' (for inserting emojis), etc.
-                let listbox_nodes = div.getElementsByTagName('div');
-                for (let listbox of listbox_nodes) {
-                    if (listbox.getAttribute('role') === 'listbox' && !listbox.innerHTML) {
-                        // Do not intercept enter key if the pop up list is visible.
-                        e.stopImmediatePropagation();
-                    }
+            // Get the pop up list after inputting "@" (for tagging people) or ':' (for inserting emojis), etc.
+            let div_nodes = document.getElementsByTagName('div');
+            let list_expanded = false;
+            for (let div of div_nodes) {
+                if (div.getAttribute('role') === 'listbox' && div.getAttribute('data-expanded') === 'true') {
+                    // Do not intercept enter key if the pop up list is visible.
+                    list_expanded = true;
                 }
+            }
+            if (!list_expanded) {
+                e.stopImmediatePropagation();
             }
         }
     }, true);
