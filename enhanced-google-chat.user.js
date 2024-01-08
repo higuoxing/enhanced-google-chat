@@ -19,8 +19,11 @@
 /* global hljs */
 
 const config = {
-    // Enable "Ctrl-Enter" key to send message. "Enter" key will just input a new line.
-    enable_ctrl_enter_to_send: true
+    // Valid options are:
+    // "None": Don't modify the default key bindings of Google Chat.
+    // "Ctrl-Enter": Use "Ctrl-Enter" to send messages and "Enter" to insert a new line.
+    // "Enter": Use "Enter" to send messages and "Ctrl-Enter" to insert a new line.
+    send_message: "Enter",
 };
 
 function render_code_blocks() {
@@ -85,13 +88,13 @@ function render_code_blocks() {
     }
 }
 
-function register_enter_key_handler(element) {
+function register_enter_key_handler(element, config) {
     element.setAttribute('enter-key-event-registered', 'true');
     element.addEventListener('keydown', (e) => {
         // Only let it go if the ctrl key is down.
         // Just don't call preventDefault(), a new line will be created always which is the
         // textfield's default behaviour.
-        if (e.key == 'Enter' && !e.ctrlKey) {
+        if (e.key == 'Enter' && ((config.send_message == "Ctrl-Enter" && !e.ctrlKey) || (config.send_message == "Enter" && e.ctrlKey))) {
             // Get the pop up list after inputting "@" (for tagging people) or ':' (for inserting emojis), etc.
             let div_nodes = document.getElementsByTagName('div');
             let list_expanded = false;
@@ -106,6 +109,12 @@ function register_enter_key_handler(element) {
             }
         }
     }, true);
+}
+
+function check_user_config() {
+    if (config.send_message != "None" && config.send_message != "Ctrl-Enter" && config.send_message != "Enter") {
+        alert("Invalid value for config.send_message. Please check enhanced-google-chat.user.js.");
+    }
 }
 
 // Called only once.
@@ -125,10 +134,12 @@ function initialize() {
                  }
                 `
     );
+
+    check_user_config(config);
 }
 
 function modify_key_event() {
-    if (config.enable_ctrl_enter_to_send) {
+    if (config.send_message != "None") {
         // register event on the chat text input box
         let div_nodes = document.getElementsByTagName('div');
         for (let div of div_nodes) {
@@ -137,7 +148,7 @@ function modify_key_event() {
             if (div.getAttribute('role') === 'textbox' &&
                 div.getAttribute('contenteditable') === 'true' &&
                 div.getAttribute('enter-key-event-registered') != 'true') {
-                register_enter_key_handler(div);
+                register_enter_key_handler(div, config);
             }
         }
     }
