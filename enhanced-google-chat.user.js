@@ -167,7 +167,7 @@ function debounce(fn, delay) {
             for (let div of div_nodes) {
                 // The id of the input text area varies, we use 'role', 'aria-label' and 'contenteditable' attributes
                 // to locate the element.
-                if (div.getAttribute('role') === 'textbox' && div.getAttribute('aria-label') === 'History is on' &&
+                if (div.getAttribute('role') === 'textbox' &&
                     div.getAttribute('contenteditable') === 'true') {
                     return [div];
                 }
