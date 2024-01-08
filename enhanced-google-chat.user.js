@@ -23,7 +23,7 @@ const config = {
     // "None": Don't modify the default key bindings of Google Chat.
     // "Ctrl-Enter": Use "Ctrl-Enter" to send messages and "Enter" to insert a new line.
     // "Enter": Use "Enter" to send messages and "Ctrl-Enter" to insert a new line.
-    send_message: "Enter",
+    send_message: "Ctrl-Enter",
 };
 
 function render_code_blocks() {
