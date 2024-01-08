@@ -9,7 +9,7 @@
 // @match        https://chat.google.com/u/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=chat.google.com
 // @require      https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js
-// @require      https://cdn.jsdelivr.net/gh/CoeJoder/GM_wrench@v1.3/dist/GM_wrench.min.js
+// @require      https://cdn.jsdelivr.net/gh/CoeJoder/GM_wrench@92eccc7c3aa5d9b437ec4ab558f49b255dc61d07/dist/GM_wrench.min.js
 // @resource     REMOTE_CSS https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css
 // @grant        GM_getResourceText
 // @grant        GM_addStyle
