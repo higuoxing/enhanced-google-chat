@@ -9,7 +9,6 @@
 // @match        https://chat.google.com/u/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=chat.google.com
 // @require      https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js
-// @require      https://cdn.jsdelivr.net/gh/CoeJoder/GM_wrench@92eccc7c3aa5d9b437ec4ab558f49b255dc61d07/dist/GM_wrench.min.js
 // @resource     REMOTE_CSS https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css
 // @grant        GM_getResourceText
 // @grant        GM_addStyle
@@ -18,7 +17,6 @@
 // ==/UserScript==
 
 /* global hljs */
-/* global GM_wrench */
 
 const config = {
     // Enable "Ctrl-Enter" key to send message. "Enter" key will just input a new line.
@@ -88,6 +86,7 @@ function render_code_blocks() {
 }
 
 function register_enter_key_handler(element) {
+    element.setAttribute('enter-key-event-registered', 'true');
     element.addEventListener('keydown', (e) => {
         // Only let it go if the ctrl key is down.
         // Just don't call preventDefault(), a new line will be created always which is the
@@ -128,9 +127,26 @@ function initialize() {
     );
 }
 
+function modify_key_event() {
+    if (config.enable_ctrl_enter_to_send) {
+        // register event on the chat text input box
+        let div_nodes = document.getElementsByTagName('div');
+        for (let div of div_nodes) {
+            // The id of the input text area varies, we use 'role', 'aria-label' and 'contenteditable' attributes
+            // to locate the element.
+            if (div.getAttribute('role') === 'textbox' &&
+                div.getAttribute('contenteditable') === 'true' &&
+                div.getAttribute('enter-key-event-registered') != 'true') {
+                register_enter_key_handler(div);
+            }
+        }
+    }
+}
+
 // Called periodically.
 function main() {
     render_code_blocks();
+    modify_key_event();
 }
 
 function debounce(fn, delay) {
@@ -159,22 +175,4 @@ function debounce(fn, delay) {
 
     let el = document.documentElement;
     el.addEventListener('DOMSubtreeModified', debounce(main, 1000));
-
-    if (config.enable_ctrl_enter_to_send) {
-        // register event on the chat text input box
-        GM_wrench.waitForKeyElements(() => {
-            let div_nodes = document.getElementsByTagName('div');
-            for (let div of div_nodes) {
-                // The id of the input text area varies, we use 'role', 'aria-label' and 'contenteditable' attributes
-                // to locate the element.
-                if (div.getAttribute('role') === 'textbox' &&
-                    div.getAttribute('contenteditable') === 'true') {
-                    return [div];
-                }
-            }
-            return [];
-        }, (element) => {
-            register_enter_key_handler(element);
-        });
-    }
 })();
